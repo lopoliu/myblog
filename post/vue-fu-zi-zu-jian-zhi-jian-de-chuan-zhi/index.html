@@ -8,7 +8,7 @@
 <meta name="description" content="阻挡我们成功的不是失败，而是平庸">
 <meta name="theme-color" content="#000">
 <title>vue父子组件之间的传值 | lopo&#39;s blog</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1618735591418">
+<link rel="shortcut icon" href="/favicon.ico?v=1618756368569">
 <link rel="stylesheet" href="/styles/main.css">
 <link rel="stylesheet" href="/media/css/mist.css">
 
@@ -26,7 +26,7 @@
     onload="renderMathInElement(document.body);"></script>
 
     <meta name="description" content="vue父子组件之间的传值" />
-    <meta name="keywords" content="" />
+    <meta name="keywords" content="vue" />
   </head>
   <body>
     <div class="head-top-line"></div>
@@ -158,7 +158,8 @@
       <div class="sidebar-body mist" id="sidebar_body">
         
           
-            
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper ">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="https://lopoliu.github.io/images/avatar.png"/>
@@ -175,13 +176,13 @@
     </div>
     <div class="sidebar-item-box">
       <a href="">
-        <span class="site-item-stat-count">0</span>
+        <span class="site-item-stat-count">1</span>
         <span class="site-item-stat-name">分类</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">0</span>
+        <span class="site-item-stat-count">1</span>
         <span class="site-item-stat-name">标签</span>
       </a>
     </div>
@@ -191,6 +192,178 @@
 
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto" id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li><a href="#%E7%88%B6%E7%BB%84%E4%BB%B6%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%92%E5%88%B0%E5%AD%90%E7%BB%84%E4%BB%B6">父组件数据传递到子组件</a></li>
+<li><a href="#%E5%AD%90%E7%BB%84%E4%BB%B6%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%92%E5%88%B0%E7%88%B6%E7%BB%84%E4%BB%B6">子组件数据传递到父组件</a></li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1; 
+let active = 'active-show', activeClass = 'active-current';
+let tocWrapper = document.querySelector('#toc_wrapper');
+let tocContent = tocWrapper.children[0];
+let autoNumber = tocWrapper&&tocWrapper.classList.contains('auto-number');
+
+function addTocNumber(elem, deep) {
+  if (!elem) {
+    return;
+  }
+  let prop = elem.__proto__;
+
+  if (prop === HTMLUListElement.prototype) {
+    for (let i = 0; i < elem.children.length; i++) {
+      addTocNumber(elem.children[i], deep + (i + 1) + '.');
+    }
+  } else if (prop === HTMLLIElement.prototype) {
+    // 保存li元素
+    lList.push(elem);
+    for (let i = 0; i < elem.children.length; i++) {
+      let cur = elem.children[i];
+      if (cur.__proto__ === HTMLAnchorElement.prototype) {
+        if (autoNumber) {
+          cur.text =  deep + ' ' + cur.text;
+        }
+      } else if (cur.__proto__ === HTMLUListElement.prototype) {
+        addTocNumber(cur, deep);
+      }
+    }
+  }
+}
+
+
+document.addEventListener('scroll', function(e) {
+  if (lList.length <= 0) {
+    return;
+  }
+  let scrollTop = document.scrollingElement.scrollTop + 10;
+  let dir;
+
+  if (lastTop - scrollTop > 0) {
+    dir = 'up';
+  } else {
+    dir = 'down';
+  }
+
+  lastTop = scrollTop;
+  if (scrollTop <= 0) {
+    if (lastIndex >= 0 && lastIndex < hList.length) {
+      lList[lastIndex].classList.remove(activeClass);
+    }
+    return;
+  }
+
+  let current = 0, hasFind = false;
+  for (let i = 0; i < hList.length; i++) {
+    if (hList[i].offsetTop > scrollTop) {
+      current = i;
+      hasFind = true;
+      break;
+    }
+  }
+  if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+    current = hList.length - 1;
+  } else {
+    current--;
+  }
+  if (dir === 'down') {
+    if (current > lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex) 
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  } else {
+    if (current < lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex);
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  }
+});
+
+function removeParentActiveClass() {
+  let parents = tocContent.querySelectorAll('.'+active)
+  parents.forEach(function(elem) {
+    elem.classList.remove(active);
+  });
+}
+
+function addActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.add(activeClass);
+  }
+}
+
+function removeActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.remove(activeClass);
+  }
+}
+
+function addActiveLiElemment(elem, parent) {
+  if (!elem || elem === parent) {
+    return;
+  } else {
+    if (elem.__proto__ === HTMLLIElement.prototype) {
+      elem.classList.add(active);
+    }
+    addActiveLiElemment(elem.parentElement, parent);
+  }
+}
+
+function showToc() {
+  if (tocWrapper) {
+    postBody = document.querySelector('#post_body');
+    for (let i = 0; i < postBody.children.length; i++) {
+      if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+        hList.push(postBody.children[i]);
+      }
+    }
+    if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+    } else if (tocWrapper.classList.contains('no_compress')){
+      tocContent.classList.add('expanded');
+    } else {
+      if (hList.length > 10) {
+        active = 'active-hidden'
+        tocContent.classList.add('closed');
+      } else {
+        tocContent.classList.add('expanded');
+      }
+    }
+  }
+}
+addTocNumber(tocContent, '');
+
+window.addEventListener('load', function() {
+  showToc();
+  document.querySelector('#sidebar').style='display: block;';
+  tocWrapper.classList.add('toc-active');
+  setTimeout(function() {
+    if ("createEvent" in document) {
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("scroll", false, true);
+      document.dispatchEvent(evt);
+    }
+    else {
+      document.fireEvent("scroll");
+    }
+  }, 500)
+})
+
+</script>
+            </div>
           
         
       </div>
@@ -284,21 +457,40 @@
   </h1>
   <div class="post-meta">
     
+      <span class="meta-item">
+        <i class="fa fa-thumb-tack"></i>
+        <span>置顶</span>
+        <span class="post-meta-divider">|</span>
+      </span>
+    
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span>发布于</span>
-      <span>2021-04-18</span>
+      <span>2020-03-16</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
+      <span class="meta-item">
+        <i class="fa fa-folder-o"></i>
+        <span class="pc-show">分类于</span>
+        
+          
+            <a href="https://lopoliu.github.io/tag/XpG0hjrkB/">
+              <span>vue</span>
+            </a>
+          
+        
+      </span>
+      <span class="post-meta-divider">|</span>
+    
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>2分钟</span>
+      <span>3分钟</span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>354<span class="pc-show">字数</span></span>
+      <span>457<span class="pc-show">字数</span></span>
     </span>
     
   </div>
@@ -306,59 +498,92 @@
               <div class="post-body next-md-body" id="post_body">
                 <p>最近正在学习vue，记录一编vue中父组件向子组件传值的例子，在vue中，父子组件的关系可以总结为prop向下传递，事件向上传递。父组件通过prop给子组件下发数据，子组件通过事件给父组件发送信息</p>
 <!--more-->
-<pre><code class="language-html">&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;vue中父子通讯&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-
-&lt;!-- 子组件模板 --&gt;
+<h1 id="父组件数据传递到子组件">父组件数据传递到子组件</h1>
+<pre><code class="language-html">&lt;!-- 子组件模板 --&gt;
 &lt;template id=&quot;cpn&quot;&gt;
-    &lt;div&gt;
-        &lt;!-- 在子组件中使用子组件的data --&gt;
-        &lt;h1&gt;{{ childmessage }}&lt;/h1&gt;
-        &lt;ul&gt;
-            &lt;!-- 遍历childmovies --&gt;
-            &lt;li v-for=&quot;item in childmovies&quot;&gt;{{ item }}&lt;/li&gt;
-        &lt;/ul&gt;
-    &lt;/div&gt;
+  &lt;!-- 使用tamplate 必须包含一个div --&gt;
+  &lt;div&gt;
+    &lt;!-- 在子组件中模板中使用子组件的data --&gt;
+    &lt;h1&gt;{{ childmessage }}&lt;/h1&gt;
+    &lt;ul&gt;
+      &lt;!-- 遍历childmovies --&gt;
+      &lt;li v-for=&quot;item in childmovies&quot;&gt;{{ item }}&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
 &lt;/template&gt;
 
 &lt;!-- 父组件模板 --&gt;
 &lt;div id=&quot;app&quot;&gt;
-    &lt;!-- 在父组件中使用子组件，使用v-bind进行数据绑定 --&gt;
-    &lt;child :childmovies=&quot;movies&quot; v-bind:childmessage=&quot;message&quot;&gt;&lt;/child&gt;
+  &lt;!-- 在父组件中使用子组件，使用v-bind进行数据绑定 --&gt;
+  &lt;child :childmovies=&quot;movies&quot; v-bind:childmessage=&quot;message&quot;&gt;&lt;/child&gt;
 &lt;/div&gt;
 
 &lt;script type=&quot;application/javascript&quot; src=&quot;vue.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
-    const app = new Vue({
-        el: '#app',
-        data: {
-            message: 'Hello Vue',
-            movies: ['python', 'java']
-        },
-        components: {        // 在父组件中注册局部子组件
-            child: {
-                template: '#cpn',       // 子组件模板
-                props: {        //  子组件中通过一个props来接收父组件的数据
-                    'childmovies': {
-                        type: Array,   // 限制数据类型必须为一个数组
-                        default: ['123', '456']  // 默认值
-                    },
-                    'childmessage': {
-                        type: String,
-                        default: '吃吃吃'
-                    }
-                }
-            }
-        }
-    })
+  const app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello Vue',
+      movies: ['python', 'java']
+    },
+    components: {        // 在父组件中注册局部子组件
+      child: {
+        template: '#cpn',       // 子组件模板
+        //  子组件中通过一个props来接收父组件的数据，props可以是一个数组、也可以是一个字典
+        props: ['childmovies', 'childmessage'
+        ]
+      }
+    }
+  })
 &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+</code></pre>
+<h1 id="子组件数据传递到父组件">子组件数据传递到父组件</h1>
+<pre><code class="language-html">&lt;template id=&quot;cpn&quot;&gt;
+  &lt;div&gt;
+    &lt;button @click=&quot;increment&quot;&gt;+&lt;/button&gt;
+    {{ total }}
+    &lt;button @click=&quot;decrement&quot;&gt;-&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+  &lt;cpn @decrement=&quot;changeTotal&quot; @increment=&quot;changeTotal&quot;&gt;&lt;/cpn&gt;
+&lt;/div&gt;
+
+&lt;script type=&quot;application/javascript&quot; src=&quot;vue.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  const app = new Vue({
+    el: '#app',
+    data: {
+      total: 0
+    },
+    methods: {
+      changeTotal(new_total) {
+        this.total = new_total
+      }
+    },
+    components: {
+      'cpn': {
+        template: '#cpn',
+        data() {
+          return {
+            total: 0
+          }
+        },
+        methods: {
+          increment() {
+            this.total++
+            this.$emit('decrement', this.total)
+          },
+          decrement() {
+            this.total--
+            this.$emit('increment', this.total)
+          }
+        }
+      }
+    }
+  })
+&lt;/script&gt;
 </code></pre>
 
               </div>
@@ -378,6 +603,8 @@
     </li>
   </ul>
   <div class="tags">
+    
+      <a href="https://lopoliu.github.io/tag/XpG0hjrkB/"># vue</a>
     
   </div>
   <div class="nav">
