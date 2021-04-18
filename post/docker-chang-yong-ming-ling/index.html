@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>docker常用命令  | lopo&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://lopoliu.github.io/favicon.ico?v=1618730924197">
+<link rel="stylesheet" href="https://lopoliu.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="容器管理
+1. run创建并启动容器
+
+参数选项
+-a stdin: 指定标准输入输出内容类a型，可选 STDIN/STDOUT/STDERR 三项
+-d: 后台运行容器，并返回容器ID
+-i: 以交互模式运行容器，通常与 -t 同时使用
+..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://lopoliu.github.io">
+        <img src="https://lopoliu.github.io/images/avatar.png?v=1618730924197" class="site-logo">
+        <h1 class="site-title">lopo&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      阻挡我们成功的不是失败，而是平庸
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://lopoliu.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">docker常用命令 </h2>
+            <div class="post-date">2021-04-18</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="容器管理">容器管理</h2>
+<h3 id="1-run创建并启动容器">1. run创建并启动容器</h3>
+<blockquote>
+<p>参数选项</p>
+<p>-a stdin: 指定标准输入输出内容类a型，可选 STDIN/STDOUT/STDERR 三项<br>
+-d: 后台运行容器，并返回容器ID<br>
+-i: 以交互模式运行容器，通常与 -t 同时使用<br>
+-P: 随机端口映射，容器内部端口随机映射到主机的端口<br>
+-p: 指定端口映射，格式为：主机(宿主)端口:容器端口<br>
+-t: 为容器重新分配一个伪输入终端，通常与 -i 同时使用；<br>
+--name=&quot;nginx-lb&quot;: 为容器指定一个名称；<br>
+--dns 8.8.8.8: 指定容器使用的DNS服务器，默认和宿主一致；<br>
+--dns-search example.com: 指定容器DNS搜索域名，默认和宿主一致；<br>
+-h &quot;mars&quot;: 指定容器的hostname；<br>
+-e username=&quot;ritchie&quot;: 设置环境变量；<br>
+--env-file=[]: 从指定文件读入环境变量；<br>
+--cpuset=&quot;0-2&quot; or --cpuset=&quot;0,1,2&quot;: 绑定容器到指定CPU运行；<br>
+-m :设置容器使用内存最大值；<br>
+--net=&quot;bridge&quot;: 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；<br>
+--link=[]: 添加链接到另一个容器；<br>
+--expose=[]: 开放一个端口或一组端口；<br>
+--volume , -v: 绑定一个卷</p>
+</blockquote>
+<h3 id="2-start-stop-restart-启动-停止-重启">2. start、stop、restart 启动、停止、重启</h3>
+<blockquote>
+<h2 id="start-启动已停止的容器例如-docker-start-mysql-57">start 启动已停止的容器<br>
+例如: docker start mysql-5.7</h2>
+<h2 id="stop-停止正在运行的容器例如-docker-stop-mysql-57">stop 停止正在运行的容器<br>
+例如: docker stop mysql-5.7</h2>
+<p>restart 重新启动正在运行的容器<br>
+例如: docker restart mysql-5.7</p>
+</blockquote>
+<h3 id="3-rm-删除一个容器">3. rm 删除一个容器</h3>
+<blockquote>
+<p>-f :通过 SIGKILL 信号强制删除一个运行中的容器。<br>
+例如: docker rm -f mysql-5.7</p>
+</blockquote>
+<h3 id="4-exec进入容器">4. exec进入容器</h3>
+<blockquote>
+<p>runoob@runoob:~$ docker exec -it mysql-5.7</p>
+</blockquote>
+<h3 id="5-create创建容器与run命令相同用法但只创建不会启动容器">5. create创建容器，与run命令相同用法，但只创建不会启动容器</h3>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://lopoliu.github.io/post/hello-gridea/">
+                  <h3 class="post-title">
+                    Hello Gridea
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
