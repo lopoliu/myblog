@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lopoliu.github.io</id>
     <title>lopo&apos;s blog</title>
-    <updated>2021-04-18T08:39:40.471Z</updated>
+    <updated>2021-04-18T08:46:47.047Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lopoliu.github.io"/>
     <link rel="self" href="https://lopoliu.github.io/atom.xml"/>
@@ -16,24 +16,25 @@
         <link href="https://lopoliu.github.io/post/vue-fu-zi-zu-jian-zhi-jian-de-chuan-zhi/">
         </link>
         <updated>2021-04-18T07:38:46.000Z</updated>
-        <summary type="html"><![CDATA[<p>最近正在学习vue，记录一编vue中父组件向子组件传值的例子</p>
+        <summary type="html"><![CDATA[<p>最近正在学习vue，记录一编vue中父组件向子组件传值的例子，在vue中，父子组件的关系可以总结为prop向下传递，事件向上传递。父组件通过prop给子组件下发数据，子组件通过事件给父组件发送信息</p>
 ]]></summary>
-        <content type="html"><![CDATA[<p>最近正在学习vue，记录一编vue中父组件向子组件传值的例子</p>
+        <content type="html"><![CDATA[<p>最近正在学习vue，记录一编vue中父组件向子组件传值的例子，在vue中，父子组件的关系可以总结为prop向下传递，事件向上传递。父组件通过prop给子组件下发数据，子组件通过事件给父组件发送信息</p>
 <!--more-->
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
     &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;Title&lt;/title&gt;
+    &lt;title&gt;vue中父子通讯&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
 
-
 &lt;!-- 子组件模板 --&gt;
-&lt;template id=&quot;t1&quot;&gt;
+&lt;template id=&quot;cpn&quot;&gt;
     &lt;div&gt;
+        &lt;!-- 在子组件中使用子组件的data --&gt;
         &lt;h1&gt;{{ childmessage }}&lt;/h1&gt;
         &lt;ul&gt;
+            &lt;!-- 遍历childmovies --&gt;
             &lt;li v-for=&quot;item in childmovies&quot;&gt;{{ item }}&lt;/li&gt;
         &lt;/ul&gt;
     &lt;/div&gt;
@@ -41,12 +42,11 @@
 
 &lt;!-- 父组件模板 --&gt;
 &lt;div id=&quot;app&quot;&gt;
-    &lt;!--    &lt;p&gt;{{ message }}&lt;/p&gt;--&gt;
+    &lt;!-- 在父组件中使用子组件，使用v-bind进行数据绑定 --&gt;
     &lt;child :childmovies=&quot;movies&quot; v-bind:childmessage=&quot;message&quot;&gt;&lt;/child&gt;
 &lt;/div&gt;
+
 &lt;script type=&quot;application/javascript&quot; src=&quot;vue.js&quot;&gt;&lt;/script&gt;
-
-
 &lt;script&gt;
     const app = new Vue({
         el: '#app',
@@ -54,28 +54,23 @@
             message: 'Hello Vue',
             movies: ['python', 'java']
         },
-        components: {
+        components: {        // 在父组件中注册局部子组件
             child: {
-                template: '#t1',
-                props: {
+                template: '#cpn',       // 子组件模板
+                props: {        //  子组件中通过一个props来接收父组件的数据
                     'childmovies': {
-                        type: Array,
-                        default: ['123', '456']
+                        type: Array,   // 限制数据类型必须为一个数组
+                        default: ['123', '456']  // 默认值
                     },
                     'childmessage': {
                         type: String,
                         default: '吃吃吃'
                     }
-                },
-                data() {
-                    return {}
                 }
-
             }
         }
     })
 &lt;/script&gt;
-
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
